@@ -1,0 +1,282 @@
+openapi: 3.0.3
+info:
+  title: Employee API Specification
+  description: Employee API Specification
+  version: v1
+servers:
+  - url: http://localhost:8080/employee-service/
+    description: The server
+tags:
+  - name: Company
+paths:
+  /client-api/v1/company:
+    post:
+      tags:
+        - Company
+      summary: Create a Company.
+      description: Create an Organization.
+      operationId: postCompany
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompanyRequest'
+      responses:
+        "201":
+          description: Company created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCompanyResponse'
+        "500":
+          $ref: '#/components/schemas/InternalServerException'
+  /client-api/v1/company/{company_short_code}:
+    get:
+      tags:
+        - Company
+      summary: Get a Company by company short code
+      description: Returns a company  matching one of the provided name
+      operationId: getCompany
+      parameters:
+        - name: company_short_code
+          in: path
+          description: Short Code of the Company
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Company Object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCompanyResponse'
+        "500":
+          $ref: '#/components/schemas/InternalServerException'
+        "404":
+          $ref: '#/components/schemas/NotFoundException'
+        "400":
+          $ref: '#/components/schemas/BadRequestException'
+  /client-api/v1/employees:
+    post:
+      tags:
+        - Employee
+      summary: Create an employee under a company
+      description: Create an employee under a company
+      operationId: postEmployee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEmployeeRequest'
+      responses:
+        "201":
+          description: Employee created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateEmployeeResponse'
+        "500":
+          $ref: '#/components/schemas/InternalServerException'
+  /client-api/v1/employees/{employee_id}:
+    get:
+      tags:
+        - Employee
+      summary: Get the Employee by employee id
+      description: Returns a employee matching with requested id
+      operationId: getEmployee
+      parameters:
+        - name: employee_id
+          in: path
+          description: Unique employee id
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Employee Object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEmployeeResponse'
+        "500":
+          $ref: '#/components/schemas/InternalServerException'
+        "404":
+          $ref: '#/components/schemas/NotFoundException'
+        "400":
+          $ref: '#/components/schemas/BadRequestException'
+components:
+  schemas:
+    BadRequestException:
+      type: object
+      description: Generic exception representating the bad request
+      x-java-type: com.mobiquity.v1.exceptions.BadRequestException
+    NotFoundException:
+      type: object
+      description: Generic Exception representating data not found exception
+      x-java-type: com.mobiquity.v1.exceptions.BadRequestException
+    InternalServerException:
+      type: object
+      description: Generic exception representating internal server error
+      x-java-type: com.mobiquity.v1.exceptions.BadRequestException
+    CompanyId:
+      type: string
+      description: The System Generated User Id of the Company
+      maxLength: 36
+      example: "4gg45-fsdf45-fsdfj56-5454"
+    EmployeeId:
+      type: number
+      description: The System Generated User Id of the Employee
+      maxLength: 10
+      example: 345345
+    FirstName:
+      type: string
+      description: First Name of the User used for the profile screen
+      maxLength: 50
+      example: "John"
+    LastName:
+      type: string
+      description: Last Name of the User used for the profile screen
+      maxLength: 50
+      example: "Smith"
+    CreatedOn:
+      type: string
+      description: The creation date of the object
+      format: date-time
+      example: "2018-11-13T20:20:39+00:00"
+    UpdatedOn:
+      type: string
+      description: The modification date of the object
+      format: date-time
+      example: "2018-11-13T20:20:39+00:00"
+    CompanyName:
+      type: string
+      description: Name of the Company
+      maxLength: 30
+      example: "PWC Consultancy Services"
+    CompanyShortCode:
+      type: string
+      description: Short Code of the Company
+      maxLength: 10
+      example: "PWC"
+    Address:
+      type: string
+      description: Address of the company
+      maxLength: 10
+      example: "5B, Gateway Complex, Mumbai"
+    ContactNumber:
+      type: string
+      description: Primary contact number of companys employee
+      maxLength: 10
+      example: "9456532345"
+    DateOfBirth:
+      type: string
+      description: DOB of the employee
+      format: date
+      example: "2018-11-13"
+    JoiningDate:
+      type: string
+      description: Joining Date of the Employee
+      format: date
+      example: "2018-11-13"
+    Age:
+      type: number
+      description: Age of the employee
+      maxLength: 3
+      example: 22
+    Department:
+      type: string
+      description: Department of the Employee
+      example: "HR"
+    GetEmployeeResponse:
+      type: object
+      properties:
+        employeeId:
+          $ref: '#/components/schemas/EmployeeId'
+        companyId:
+          $ref: '#/components/schemas/CompanyId'
+        firstName:
+          $ref: '#/components/schemas/FirstName'
+        lastName:
+          $ref: '#/components/schemas/LastName'
+        dateOfBirth:
+          $ref: '#/components/schemas/DateOfBirth'
+        joiningDate:
+          $ref: '#/components/schemas/JoiningDate'
+        age:
+          $ref: '#/components/schemas/Age'
+        department:
+          $ref: '#/components/schemas/Department'
+        createdOn:
+          $ref: '#/components/schemas/CreatedOn'
+        updatedOn:
+          $ref: '#/components/schemas/UpdatedOn'
+    GetCompanyResponse:
+      type: object
+      properties:
+        companyName:
+          $ref: '#/components/schemas/CompanyName'
+        companyShortCode:
+          $ref: '#/components/schemas/CompanyShortCode'
+        address:
+          $ref: '#/components/schemas/Address'
+        contactNumber:
+          $ref: '#/components/schemas/ContactNumber'
+        createdOn:
+          $ref: '#/components/schemas/CreatedOn'
+        updatedOn:
+          $ref: '#/components/schemas/UpdatedOn'
+    CreateCompanyRequest:
+      required:
+        - companyName
+        - companyShortCode
+        - address
+        - contactNumber
+      type: object
+      properties:
+        companyName:
+          $ref: '#/components/schemas/CompanyName'
+        companyShortCode:
+          $ref: '#/components/schemas/CompanyShortCode'
+        address:
+          $ref: '#/components/schemas/Address'
+        contactNumber:
+          $ref: '#/components/schemas/ContactNumber'
+    CreateCompanyResponse:
+      type: object
+      required:
+        - companyId
+      properties:
+        companyId:
+          $ref: '#/components/schemas/CompanyId'
+    CreateEmployeeRequest:
+      required:
+        - companyId
+        - firstName
+        - lastName
+        - joiningDate
+        - age
+        - department
+      type: object
+      properties:
+        companyId:
+          $ref: '#/components/schemas/CompanyId'
+        firstName:
+          $ref: '#/components/schemas/FirstName'
+        lastName:
+          $ref: '#/components/schemas/LastName'
+        dateOfBirth:
+          $ref: '#/components/schemas/DateOfBirth'
+        joiningDate:
+          $ref: '#/components/schemas/JoiningDate'
+        age:
+          $ref: '#/components/schemas/Age'
+        department:
+          $ref: '#/components/schemas/Department'
+    CreateEmployeeResponse:
+      type: object
+      required:
+        - employeeId
+      properties:
+        employeeId:
+          $ref: '#/components/schemas/EmployeeId'
