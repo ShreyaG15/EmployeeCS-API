@@ -1,14 +1,17 @@
 package com.Sg.companyemployeecasestudy.exceptionHandler;
 
 import com.Sg.companyemployeecasestudy.exception.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
-public class CustomisedResponseEntityException extends ResponseEntityExceptionHandler {
+public class CustomisedResponseEntityHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CompanyNotFound.class)
     public final ResponseEntity<Object> companyNotFoundException() {
@@ -37,6 +40,12 @@ public class CustomisedResponseEntityException extends ResponseEntityExceptionHa
     @ExceptionHandler(ContactNumberNotValid.class)
     public final ResponseEntity<Object> contactNumberNotValid() {
         ExceptionResponse exceptionResponse = new ExceptionResponse("400", "Contact Number should be of 10 digits");
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse("400", "Null value Invalid");
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }

@@ -39,8 +39,7 @@ public class EmployeeValidation {
                 createEmployeeRequestDto.getFirstName().isEmpty() ||
                 createEmployeeRequestDto.getLastName().isEmpty() ||
                 Objects.isNull(createEmployeeRequestDto.getDateOfBirth()) ||
-                createEmployeeRequestDto.getDepartment().isEmpty())
-        {
+                createEmployeeRequestDto.getDepartment().isEmpty()) {
             throw new FieldCantBeNullOrEmpty();
         }
     }

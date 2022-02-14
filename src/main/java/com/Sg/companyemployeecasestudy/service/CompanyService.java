@@ -40,8 +40,7 @@ public class CompanyService {
         Company savedCompany = companyRepository.save(company);
         CreateCompanyResponseDto createCompanyResponseDto = new CreateCompanyResponseDto();
         createCompanyResponseDto.setCompanyId(savedCompany.getId());
-        ResponseEntity<CreateCompanyResponseDto> responseEntity = new ResponseEntity<>(createCompanyResponseDto, HttpStatus.CREATED);
-        return responseEntity;
+        return new ResponseEntity<>(createCompanyResponseDto, HttpStatus.CREATED);
     }
 
     public ResponseEntity<GetCompanyResponseDto> getCompany(String companyShortCode) {
@@ -53,7 +52,6 @@ public class CompanyService {
         getCompanyResponseDto.setContactNumber(company.getContactNumber());
         getCompanyResponseDto.setCreatedOn(company.getCreatedOn().atOffset(ZoneOffset.UTC));
         getCompanyResponseDto.setUpdatedOn(company.getUpdatedOn().atOffset(ZoneOffset.UTC));
-        ResponseEntity<GetCompanyResponseDto> responseEntity = new ResponseEntity<>(getCompanyResponseDto, HttpStatus.OK);
-        return responseEntity;
+        return new ResponseEntity<>(getCompanyResponseDto, HttpStatus.OK);
     }
 }

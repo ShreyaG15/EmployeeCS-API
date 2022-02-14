@@ -1,10 +1,10 @@
 package com.Sg.companyemployeecasestudy.service;
 
 import com.Sg.companyemployeecasestudy.entity.Employee;
+import com.Sg.companyemployeecasestudy.exception.CompanyNotFound;
 import com.Sg.companyemployeecasestudy.repository.CompanyRepository;
 import com.Sg.companyemployeecasestudy.repository.EmployeeRepository;
 import com.Sg.companyemployeecasestudy.validation.EmployeeValidation;
-import openapi.model.CreateCompanyResponseDto;
 import openapi.model.CreateEmployeeRequestDto;
 import openapi.model.CreateEmployeeResponseDto;
 import openapi.model.GetEmployeeResponseDto;
@@ -47,11 +47,11 @@ public class EmployeeService {
         if (companyRepository.findById(createEmployeeRequestDto.getCompanyId()).isPresent()){
             employee.setCompany(companyRepository.findById(createEmployeeRequestDto.getCompanyId()).get());
         }
+        else throw new CompanyNotFound();
         Employee savedEmployee = employeeRepository.save(employee);
         CreateEmployeeResponseDto createEmployeeResponseDto = new CreateEmployeeResponseDto();
         createEmployeeResponseDto.setEmployeeId(BigDecimal.valueOf(savedEmployee.getEmployeeId()));
-        ResponseEntity<CreateEmployeeResponseDto> responseEntity = new ResponseEntity<>(createEmployeeResponseDto, HttpStatus.CREATED);
-        return responseEntity;
+        return new ResponseEntity<>(createEmployeeResponseDto, HttpStatus.CREATED);
 
     }
 
@@ -68,7 +68,6 @@ public class EmployeeService {
         getEmployeeResponseDto.setDepartment(employee.getDepartment());
         getEmployeeResponseDto.setCreatedOn(employee.getCreatedOn().atOffset(ZoneOffset.UTC));
         getEmployeeResponseDto.setUpdatedOn(employee.getUpdatedOn().atOffset(ZoneOffset.UTC));
-        ResponseEntity<GetEmployeeResponseDto> responseEntity = new ResponseEntity<>(getEmployeeResponseDto,HttpStatus.OK);
-        return responseEntity;
+        return new ResponseEntity<>(getEmployeeResponseDto,HttpStatus.OK);
     }
 }
