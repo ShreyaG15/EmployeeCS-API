@@ -48,4 +48,10 @@ public class CustomisedResponseEntityHandler extends ResponseEntityExceptionHand
         ExceptionResponse exceptionResponse = new ExceptionResponse("400", "Null value Invalid");
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(CompanyAlreadyExists.class)
+    public final ResponseEntity<Object> companyAlreadyExists() {
+        ExceptionResponse exceptionResponse = new ExceptionResponse("400", "Company Already Exists by Shortcode");
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
 }

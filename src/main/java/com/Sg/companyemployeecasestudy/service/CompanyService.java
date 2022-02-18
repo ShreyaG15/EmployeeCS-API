@@ -1,5 +1,6 @@
 package com.Sg.companyemployeecasestudy.service;
 
+import com.Sg.companyemployeecasestudy.Mapper.CompanyMapperImpl;
 import com.Sg.companyemployeecasestudy.entity.Company;
 import com.Sg.companyemployeecasestudy.repository.CompanyRepository;
 import com.Sg.companyemployeecasestudy.validation.CompanyValidation;
@@ -12,46 +13,36 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Component
 public class CompanyService {
 
-    CompanyRepository companyRepository;
-    CompanyValidation companyValidation;
+    private CompanyMapperImpl companyMapperImpl;
+    private CompanyRepository companyRepository;
+    private CompanyValidation companyValidation;
 
     @Autowired
-    public CompanyService(CompanyRepository companyRepository, CompanyValidation companyValidation) {
+    public CompanyService(CompanyMapperImpl companyMapperImpl, CompanyRepository companyRepository, CompanyValidation companyValidation) {
+        this.companyMapperImpl = companyMapperImpl;
         this.companyRepository = companyRepository;
         this.companyValidation = companyValidation;
     }
 
     public ResponseEntity<CreateCompanyResponseDto> createCompany(CreateCompanyRequestDto createCompanyRequestDto) {
         companyValidation.validateCompany(createCompanyRequestDto);
-        Company company = new Company();
-        company.setCompanyName(createCompanyRequestDto.getCompanyName());
-        company.setCompanyShortCode(createCompanyRequestDto.getCompanyShortCode());
-        company.setAddress(createCompanyRequestDto.getAddress());
-        company.setContactNumber(createCompanyRequestDto.getContactNumber());
+        Company company = companyMapperImpl.mapToEntity(createCompanyRequestDto);
         company.setCreatedBy("System");
         company.setCreatedOn(LocalDateTime.now());
         company.setUpdatedBy("System");
         company.setUpdatedOn(LocalDateTime.now());
         Company savedCompany = companyRepository.save(company);
-        CreateCompanyResponseDto createCompanyResponseDto = new CreateCompanyResponseDto();
-        createCompanyResponseDto.setCompanyId(savedCompany.getId());
+        CreateCompanyResponseDto createCompanyResponseDto = companyMapperImpl.mapEntityToResponseDto(savedCompany);
         return new ResponseEntity<>(createCompanyResponseDto, HttpStatus.CREATED);
     }
 
     public ResponseEntity<GetCompanyResponseDto> getCompany(String companyShortCode) {
         Company company = companyValidation.validateCompanyByShortcode(companyShortCode);
-        GetCompanyResponseDto getCompanyResponseDto = new GetCompanyResponseDto();
-        getCompanyResponseDto.setCompanyName(company.getCompanyName());
-        getCompanyResponseDto.setCompanyShortCode(company.getCompanyShortCode());
-        getCompanyResponseDto.setAddress(company.getAddress());
-        getCompanyResponseDto.setContactNumber(company.getContactNumber());
-        getCompanyResponseDto.setCreatedOn(company.getCreatedOn().atOffset(ZoneOffset.UTC));
-        getCompanyResponseDto.setUpdatedOn(company.getUpdatedOn().atOffset(ZoneOffset.UTC));
+        GetCompanyResponseDto getCompanyResponseDto = companyMapperImpl.mapToEntity1(company);
         return new ResponseEntity<>(getCompanyResponseDto, HttpStatus.OK);
     }
 }

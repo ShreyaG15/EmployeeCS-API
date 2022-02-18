@@ -1,10 +1,7 @@
 package com.Sg.companyemployeecasestudy.validation;
 
 import com.Sg.companyemployeecasestudy.entity.Company;
-import com.Sg.companyemployeecasestudy.exception.CompanyNotFound;
-import com.Sg.companyemployeecasestudy.exception.ContactNumberNotValid;
-import com.Sg.companyemployeecasestudy.exception.FieldCantBeNullOrEmpty;
-import com.Sg.companyemployeecasestudy.exception.MandatoryFieldRequired;
+import com.Sg.companyemployeecasestudy.exception.*;
 import com.Sg.companyemployeecasestudy.repository.CompanyRepository;
 import openapi.model.CreateCompanyRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +21,29 @@ public class CompanyValidation {
     }
 
     public Company validateCompanyByShortcode(String shortCode) {
-        if (Objects.isNull(shortCode)||shortCode.isEmpty()){
+        if (Objects.isNull(shortCode) || shortCode.isEmpty()) {
             throw new MandatoryFieldRequired();
         }
         List<Company> company = companyRepository.findByCompanyShortCode(shortCode);
-        if (Objects.isNull(company)|| company.isEmpty()){
+        if (Objects.isNull(company) || company.isEmpty()) {
             throw new CompanyNotFound();
         }
         return company.get(0);
     }
 
-    public CreateCompanyRequestDto validateCompany(CreateCompanyRequestDto createCompanyRequestDto) {
-        if (Objects.isNull(createCompanyRequestDto)){
+    public void validateCompany(CreateCompanyRequestDto createCompanyRequestDto) {
+        if (Objects.isNull(createCompanyRequestDto) ||
+                createCompanyRequestDto.getCompanyName().isEmpty() ||
+                createCompanyRequestDto.getCompanyShortCode().isEmpty() ||
+                createCompanyRequestDto.getAddress().isEmpty() ||
+                createCompanyRequestDto.getContactNumber().isEmpty()) {
             throw new FieldCantBeNullOrEmpty();
         }
-        if (createCompanyRequestDto.getContactNumber().length()!=10){
+        if (createCompanyRequestDto.getContactNumber().length() != 10) {
             throw new ContactNumberNotValid();
         }
-        return createCompanyRequestDto;
+        if (Boolean.TRUE.equals(companyRepository.existsByCompanyShortCode(createCompanyRequestDto.getCompanyShortCode()))){
+            throw new CompanyAlreadyExists();
+        }
     }
 }

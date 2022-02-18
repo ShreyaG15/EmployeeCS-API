@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface CompanyRepository extends JpaRepository<Company, String> {
   List<Company> findByCompanyShortCode(String shortCode);
   Optional<Company> findById(String companyId);
+  Boolean existsByCompanyShortCode(String shortCode);
 }

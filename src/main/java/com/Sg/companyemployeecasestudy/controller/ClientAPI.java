@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 @RestController
@@ -36,7 +37,12 @@ public class ClientAPI implements ClientApiApi {
 
     @Override
     public ResponseEntity<CreateEmployeeResponseDto> postEmployee(CreateEmployeeRequestDto createEmployeeRequestDto) {
-        return employeeService.createEmployee(createEmployeeRequestDto);
+        try {
+            return employeeService.createEmployee(createEmployeeRequestDto);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
